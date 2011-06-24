@@ -11,8 +11,8 @@ end
 class DbReplicationDemoApp < Sinatra::Base
 
   get "/" do
-    Hit.create(:ip => request.ip)
-    "Hi #{request.ip}"
+    hit = Hit.create(:ip => request.ip)
+    "Hi #{hit.ip} at #{hit.created_at}"
   end
 end
 
