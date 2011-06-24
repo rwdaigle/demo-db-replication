@@ -1,1 +1,32 @@
+# Initial setup
+
+heroku create --stack cedar
+heroku addons:add heroku-postgresql:ronin
+heroku pg:wait
+heroku pg:promote HEROKU_POSTGRESQL_COLOR1
+heroku run rake db:migrate
+
+# Fork (~3-5 mins)
+
+heroku addons:add heroku-postgresql:ronin --fork HEROKU_POSTGRESQL_COLOR1
+heroku pg:wait
+heroku pg:psql HEROKU_POSTGRESQL_COLOR1
+> select count(*) from hits;
+heroku pg:psql HEROKU_POSTGRESQL_COLOR2
+> select count(*) from hits;
+- hit site to increment hits
+> select count(*) from hits;
+- No change since was forked - not following master anymore
+heroku addons:remove HEROKU_POSTGRESQL_COLOR2
+
+# Follow
+
+heroku addons:add heroku-postgresql:ronin --follow HEROKU_POSTGRESQL_COLOR1
+heroku pg:wait
+heroku pg:psql HEROKU_POSTGRESQL_COLOR3
+> select count(*) from hits;
+- hit site to increment hits
+> select count(*) from hits;
+- Incrementing since it's following master
+heroku addons:remove HEROKU_POSTGRESQL_COLOR3
 
