@@ -1,7 +1,8 @@
 require 'active_record'
 require 'logger'
+require 'erb'
 
-dbconfig = YAML.load(File.read('config/database.yml'))
+dbconfig = YAML.load(ERB.new(File.read('config/database.yml')).result)
 ActiveRecord::Base.establish_connection dbconfig[ENV['RACK_ENV'] || 'development']
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
